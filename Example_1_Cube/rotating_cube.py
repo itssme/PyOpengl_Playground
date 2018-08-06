@@ -4,6 +4,8 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from sys import argv
+
 vertices = (
     (1, -1, -1),
     (1, 1, -1),
@@ -15,7 +17,7 @@ vertices = (
     (-1, 1, 1)
 )
 
-# (element in vertices, is connecting to)
+# (element in vertices, is connected to)
 edges = (
     (0, 1),
     (0, 3),
@@ -31,8 +33,36 @@ edges = (
     (5, 7)
 )
 
+surfaces = (
+    (0, 1, 2, 3),
+    (3, 2, 7, 6),
+    (6, 7, 5, 4),
+    (4, 5, 1, 0),
+    (1, 5, 7, 2),
+    (4, 0, 3, 6)
+)
+
+
+colors = {
+    "NOTHING": (0, 0, 0),
+    "RED": (1, 0, 0),
+    "GREEN": (0, 1, 0),
+    "BLUE": (0, 0, 1),
+    "LIGHT_BLUE": (0, 1, 1)
+}
+
 
 def cube():
+    if "--draw-surface" in argv:
+        glBegin(GL_QUADS)
+
+        for surface in surfaces:
+            glColor3fv(colors["GREEN"])
+            for vertex in surface:
+                glVertex3fv(vertices[vertex])
+
+        glEnd()
+
     glBegin(GL_LINES)
 
     for edge in edges:
