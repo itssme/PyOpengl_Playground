@@ -1,13 +1,15 @@
+from threading import Thread
+
 import pygame
 from pygame.locals import *
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from pygame.time import Clock
 
 from game import Game
 
-from time import time
-
+from time import time, sleep
 
 keys = {
     "K_LEFT": False,
@@ -68,6 +70,13 @@ def main():
     # initialize pygame
     pygame.init()
 
+    # https://github.com/pygame/pygame/issues/331
+    # Actually this game should not use 200% of you cpu
+    # however if pygame is installed via pip this happens...
+    # I built pygame from github and the cpu usage went
+    # to about ~20%. However for some reason the whole
+    # game stated to lag and I installed it again via pip.
+
     display = (1200, 800)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
@@ -76,6 +85,8 @@ def main():
     game_manager = Game()
 
     last_bullet_time = time()
+
+    clock = Clock()
 
     try:
         while not game_manager.player.dead:
@@ -115,6 +126,7 @@ def main():
             game_manager.draw()
 
             pygame.display.flip()
+            clock.tick(60)
 
     except KeyboardInterrupt:
         game_manager.player.dead = True

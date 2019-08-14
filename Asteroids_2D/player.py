@@ -18,11 +18,11 @@ class Player(GameObject):
         ]
 
         self.vertices = [
-            [0, 0.05, 0],
-            [0.02, 0, 0],
-            [0, 0.02, 0],
-            [-0.02, 0, 0],
-            [0, 0.02, 0]  # middle point
+            [0, 0.05],
+            [0.02, 0],
+            [0, 0.02],
+            [-0.02, 0],
+            [0, 0.02]  # middle point
         ]
 
         self.calculate_size()

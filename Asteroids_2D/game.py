@@ -1,3 +1,5 @@
+from OpenGL.GL import glBegin, GL_LINES, glEnd
+
 from player import Player
 from asteroid import Asteroid
 
@@ -14,10 +16,10 @@ def inside_polygon(x, y, vertices):
 
     n = len(vertices)
     inside = False
-    p1x, p1y, ignore_z = vertices[0]
+    p1x, p1y = vertices[0]
 
     for i in range(1, n + 1):
-        p2x, p2y, ignore_z = vertices[i % n]
+        p2x, p2y = vertices[i % n]
 
         if y > min(p1y, p2y):
             if y <= max(p1y, p2y):
@@ -60,7 +62,6 @@ class Game:
         self.collision_thread.start()
 
     def collision_loop(self):
-
         while not self.player.dead:
             start = time()
 
@@ -93,7 +94,6 @@ class Game:
 
                 self.asteroids[i].translate(x_pos, y_pos)
                 in_asteroid = self.check_collision_asteroids()
-                # TODO: check if this translation caused a collision and then translate the asteroid again randomly
 
     def tick_all_objects(self):
         self.tick_asteroids()
@@ -106,28 +106,24 @@ class Game:
             self.player = Player()
 
     def tick_asteroids(self):
-        new_asteroids = []
-
-        for i in xrange(0, len(self.asteroids)):
+        for i in xrange(len(self.asteroids) - 1, -1, -1):
             if not self.asteroids[i].dead:
-                new_asteroids.append(self.asteroids[i])
                 self.asteroids[i].tick()
-
-        self.asteroids = new_asteroids
+            else:
+                del self.asteroids[i]
 
     def tick_player(self):
         self.player.tick()
 
     def tick_bullets(self):
-        new_bullets = []
-        for i in xrange(0, len(self.bullets)):
-            if not self.bullets[i].tick() and not self.bullets[i].dead:
-                new_bullets.append(self.bullets[i])
-
-        self.bullets = new_bullets
+        for i in xrange(len(self.bullets) - 1, -1, -1):
+            if self.bullets[i].tick():
+                del self.bullets[i]
 
     def draw(self):
         # TODO: make this with GLlist stuff
+
+        glBegin(GL_LINES)
 
         for i in xrange(0, len(self.asteroids)):
             self.asteroids[i].draw()
@@ -137,12 +133,14 @@ class Game:
 
         self.player.draw()
 
+        glEnd()
+
     def check_collision_asteroids(self):
         collision = False
 
         for i in xrange(0, len(self.asteroids)):
             for j in xrange(0, len(self.asteroids[i].vertices)):
-                for z in xrange(0, len(self.asteroids)):  # TODO divide len by 2?
+                for z in xrange(0, len(self.asteroids) / 2):
                     if i != z:
                         if inside_polygon(self.asteroids[i].vertices[j][0], self.asteroids[i].vertices[j][1], self.asteroids[z].vertices):
                             self.asteroids[i].collided()

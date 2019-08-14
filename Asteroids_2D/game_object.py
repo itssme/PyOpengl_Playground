@@ -44,16 +44,16 @@ class GameObject:
             if y != 0: self.vertices[i][1] = self.vertices[i][1] + y
 
     def draw(self):
-        glBegin(GL_LINES)
+        #glBegin(GL_LINES)
 
         if self.color is not None:
             glColor3fv(self.colors[self.color])
 
         for edge in self.edges:
             for vertex in edge:
-                glVertex3fv(self.vertices[vertex])
+                glVertex2fv(self.vertices[vertex])
 
-        glEnd()
+        #glEnd()
 
     def rotate(self):
         angle = radians(self.__last_heading - self.heading)

@@ -33,7 +33,7 @@ class Asteroid(GameObject):
             a = sin(radians(alpha)) * b / sin(radians(beta))
             c = sin(radians(gamma)) * b / sin(radians(beta))
 
-            self.vertices.append([c, a, 0])
+            self.vertices.append([c, a])
 
             """
             print self.vertices
@@ -53,7 +53,7 @@ class Asteroid(GameObject):
         self.edges[-1][1] = 0
 
         # this is the middle point, it has NO purpose for opengl and is only used in game_object.rotate and in translate
-        self.vertices.append([0, 0, 0])
+        self.vertices.append([0, 0])
 
     def collided(self):
         self.speed = abs(self.speed) if self.speed < 0 else -self.speed
